@@ -135,26 +135,25 @@ if ($usuarioLogado) {
         <h2>Explore as categorias</h2>
 
         <p>Encontre produtos de diferentes tipos.</p>
+<div class="lista-categorias">
 
-        <div class="lista-categorias">
+    <?php if (count($categorias) > 0): ?>
 
-            <?php if (count($categorias) > 0): ?>
+        <?php foreach ($categorias as $categoria): ?>
 
-                <?php foreach ($categorias as $categoria): ?>
+            <a href="buscar.php?categoria=<?= (int) $categoria['id'] ?>" class="categoria">
+                <?= e($categoria['nome']) ?>
+            </a>
 
-                    <div class="categoria">
-                        <?= e($categoria['nome']) ?>
-                    </div>
+        <?php endforeach; ?>
 
-                <?php endforeach; ?>
+    <?php else: ?>
 
-            <?php else: ?>
+        <p>As categorias aparecerão aqui em breve.</p>
 
-                <p>As categorias aparecerão aqui em breve.</p>
+    <?php endif; ?>
 
-            <?php endif; ?>
-
-        </div>
+</div>
 
     </section>
 
@@ -209,7 +208,47 @@ if ($usuarioLogado) {
                         $idsFavoritos,
                         true
                     );
+                    // ======================================================
+                    // LIMITAR A DESCRIÇÃO DO PRODUTO A 100 CARACTERES
+                    // ======================================================
 
+                    // Recupera a descrição completa do produto
+                        $descricao = $produto['descricao'] ?? '';
+
+                    // ======================================================
+                    // LIMITAR A DESCRIÇÃO DO PRODUTO A 100 CARACTERES
+                    // ======================================================
+
+                    $descricao = $produto['descricao'] ?? '';
+
+                    if (iconv_strlen($descricao, 'UTF-8') > 28) {
+
+                        $descricao = iconv_substr(
+                            $descricao,
+                            0,
+                            28,
+                            'UTF-8'
+                        ) . '...';
+}
+                    // ======================================================
+                    // LIMITAR O TÍTULO DO PRODUTO A 100 CARACTERES
+                    // ======================================================
+
+                    // Recupera o título completo
+                    $titulo = $produto['nome'] ?? '';
+
+                    // Verifica se o título ultrapassa 100 caracteres
+                    if (iconv_strlen($titulo, 'UTF-8') > 25) {
+
+                        // Mantém somente os primeiros 100 caracteres
+                        $titulo = iconv_substr(
+                            $titulo,
+                            0,
+                            25,
+                            'UTF-8'
+                        ) . '...';
+
+                    }
                     ?>
 
                     <article class="produto">
@@ -240,11 +279,11 @@ if ($usuarioLogado) {
                         <div class="produto-info">
 
                             <h3>
-                                <?= e($produto['nome']) ?>
+                                <?= e($titulo) ?>
                             </h3>
 
                             <p>
-                                <?= e($produto['descricao'] ?? '') ?>
+                                <?= e($descricao) ?>
                             </p>
 
                             <strong>

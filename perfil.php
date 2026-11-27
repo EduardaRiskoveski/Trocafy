@@ -131,20 +131,31 @@ $produtos = $stmt->fetchAll();
                 <?= date('d/m/Y', strtotime($usuario['criado_em'])) ?>
             </small>
 
-            <!-- Botões de ação do perfil -->
-            <div class="perfil-acoes">
 
-                <!-- Leva para a página de edição -->
-                <a href="editar_perfil.php" class="botao-editar">
-                    Editar perfil
-                </a>
+<!-- ==========================================
+    BOTÕES DE AÇÃO DO PERFIL
+=========================================== -->
 
-                <!-- Leva para a página de anúncios -->
-                <a href="anunciar.php" class="botao-anunciar">
-                    + Novo anúncio
-                </a>
+<div class="perfil-acoes">
 
-            </div>
+    <!-- Leva para a página de edição do perfil -->
+    <a href="editar_perfil.php" class="botao-editar">
+        Editar perfil
+    </a>
+
+    <!-- Leva para a página de criação de anúncios -->
+    <a href="anunciar.php" class="botao-anunciar">
+        + Novo anúncio
+    </a>
+
+    <!-- Leva para a página onde o vendedor
+        visualiza e responde às solicitações de compra -->
+    <a href="minhas_solicitacoes.php" class="botao-anunciar">
+        🛍️ Minhas solicitações
+    </a>
+
+</div>
+
 
         </div>
 

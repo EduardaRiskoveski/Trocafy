@@ -1,318 +1,259 @@
 
 <?php
 
-// ======================================================
 // 1. INICIAR A SESSÃO
-// ======================================================
-
-// Verifica se a sessão já está iniciada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
-// ======================================================
-// 2. VERIFICAR PERMISSÃO DE ADMINISTRADOR
-// ======================================================
-
-// Carrega as funções auxiliares
+// 2. VERIFICAR ADMINISTRADOR
 require_once __DIR__ . '/../includes/funcoes.php';
-
-// Impede que usuários comuns acessem esta página
 exigirAdmin();
 
-
-// ======================================================
-// 3. CONECTAR AO BANCO DE DADOS
-// ======================================================
-
-// Carrega a conexão com o MySQL
+// 3. CONECTAR AO BANCO
 require_once __DIR__ . '/../config/conexao.php';
 
+// ID do administrador conectado
+$adminAtual = (int) $_SESSION['usuario_id'];
 
-// ======================================================
-// 4. BUSCAR OS USUÁRIOS CADASTRADOS
-// ======================================================
+// 4. GERAR TOKEN DE SEGURANÇA
+if (empty($_SESSION['csrf_usuarios'])) {
+    $_SESSION['csrf_usuarios'] = bin2hex(random_bytes(32));
+}
 
-// Busca os dados dos usuários
-// A senha não é selecionada, pois não precisamos exibi-la.
-$sql = "
-    SELECT
-        id,
-        nome,
-        email,
-        tipo,
-        criado_em
+// 5. PROCESSAR PROMOÇÃO
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $token = $_POST['csrf_token'] ?? '';
+    $usuarioId = filter_input(
+        INPUT_POST,
+        'usuario_id',
+        FILTER_VALIDATE_INT
+    );
+
+    if (
+        !is_string($token) ||
+        !hash_equals($_SESSION['csrf_usuarios'], $token)
+    ) {
+        header('Location: usuarios.php?erro=token');
+        exit;
+    }
+
+    // Impede alterar a própria conta
+    if (!$usuarioId || $usuarioId === $adminAtual) {
+        header('Location: usuarios.php?erro=usuario');
+        exit;
+    }
+
+    // Verifica se o usuário existe
+    $stmt = $pdo->prepare("
+        SELECT id, tipo
+        FROM usuarios
+        WHERE id = ?
+    ");
+
+    $stmt->execute([$usuarioId]);
+    $usuario = $stmt->fetch();
+
+    if (!$usuario) {
+        header('Location: usuarios.php?erro=nao_encontrado');
+        exit;
+    }
+
+    // Promove o usuário a administrador
+    if ($usuario['tipo'] !== 'admin') {
+
+        $stmt = $pdo->prepare("
+            UPDATE usuarios
+            SET tipo = 'admin'
+            WHERE id = ?
+        ");
+
+        $stmt->execute([$usuarioId]);
+    }
+
+    header('Location: usuarios.php?sucesso=1');
+    exit;
+}
+
+// 6. BUSCAR USUÁRIOS
+$stmt = $pdo->query("
+    SELECT id, nome, email, tipo, criado_em
     FROM usuarios
     ORDER BY id DESC
-";
+");
 
-// Executa a consulta
-$stmt = $pdo->query($sql);
-
-// Armazena todos os usuários encontrados
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerenciar usuários | Trocafy</title>
+<link rel="stylesheet" href="../asset/style.css">
 
-    <!-- Define a codificação dos caracteres -->
-    <meta charset="UTF-8">
 
-    <!-- Adapta a página para celulares e computadores -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Título da página -->
-    <title>Gerenciar usuários | Trocafy</title>
-
-    <!-- Importa o CSS principal -->
-    <link rel="stylesheet" href="../asset/style.css">
-
-    <!-- Estilos específicos da página administrativa -->
-    <style>
-
-        /* Área principal */
-        .admin-container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 40px auto;
-        }
-
-        /* Tabela de usuários */
-        .admin-tabela {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            margin-top: 25px;
-        }
-
-        /* Células da tabela */
-        .admin-tabela th,
-        .admin-tabela td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-        }
-
-        /* Cabeçalho da tabela */
-        .admin-tabela th {
-            background: #eee8ff;
-            color: #292235;
-        }
-
-        /* Permite rolagem em telas pequenas */
-        .tabela-container {
-            overflow-x: auto;
-        }
-
-        /* Link para voltar ao painel */
-        .voltar-admin {
-            display: inline-block;
-            margin-top: 15px;
-            color: #7041bd;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        /* Identificação do administrador */
-        .tipo-admin {
-            background: #eee5ff;
-            color: #7041bd;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        /* Identificação de usuário comum */
-        .tipo-usuario {
-            background: #eeeeee;
-            color: #555;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-
-        /* Mensagem quando não existem usuários */
-        .sem-registros {
-            padding: 30px;
-            background: white;
-            border-radius: 12px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-    </style>
 
 </head>
 
 <body>
+<header class="cabecalho">
 
-    <!-- ==================================================
-         5. CABEÇALHO ADMINISTRATIVO
-    =================================================== -->
+    <div class="cabecalho-container">
 
-    <header class="cabecalho">
-
-        <div class="cabecalho-container">
-
-            <!-- Logo do painel -->
-            <a href="index.php" class="logo">
-                Trocafy Admin
-            </a>
-
-            <!-- Links de navegação -->
-            <nav class="menu">
-
-                <a href="index.php">Painel</a>
-
-                <a href="../index.php">Voltar ao site</a>
-
-                <a href="../sair.php">Sair</a>
-
-            </nav>
-
-        </div>
-
-    </header>
-
-
-    <!-- ==================================================
-         6. CONTEÚDO PRINCIPAL
-    =================================================== -->
-
-    <main class="admin-container">
-
-        <!-- Título da página -->
-        <h1>Gerenciar usuários</h1>
-
-        <p>
-            Aqui você pode visualizar as contas cadastradas
-            no Trocafy.
-        </p>
-
-        <!-- Link para retornar ao painel -->
-        <a href="index.php" class="voltar-admin">
-            ← Voltar ao painel administrativo
+        <a href="index.php" class="logo">
+            Trocafy Admin
         </a>
 
+        <nav class="menu">
+            <a href="index.php">Painel</a>
+            <a href="../index.php">Voltar ao site</a>
+            <a href="../auth/sair.php">Sair</a>
+        </nav>
 
-        <!-- ==================================================
-             7. VERIFICAR SE EXISTEM USUÁRIOS
-        =================================================== -->
+    </div>
 
-        <?php if (count($usuarios) > 0): ?>
+</header>
 
-            <!-- Área que permite rolagem da tabela -->
-            <div class="tabela-container">
+<main class="admin-container">
 
-                <!-- Tabela de usuários -->
-                <table class="admin-tabela">
+    <h1>Gerenciar usuários</h1>
 
-                    <!-- Cabeçalho da tabela -->
-                    <thead>
+    <p>
+        Visualize os usuários cadastrados
+        e gerencie suas permissões.
+    </p>
 
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Tipo de conta</th>
-                            <th>Data de cadastro</th>
-                        </tr>
+    <?php if (isset($_GET['sucesso'])): ?>
 
-                    </thead>
+        <div class="mensagem sucesso">
+            Usuário promovido a administrador com sucesso!
+        </div>
 
+    <?php endif; ?>
 
-                    <!-- Dados dos usuários -->
-                    <tbody>
+    <?php if (isset($_GET['erro'])): ?>
 
-                        <!-- Percorre todos os usuários encontrados -->
-                        <?php foreach ($usuarios as $usuario): ?>
+        <div class="mensagem erro">
+            Não foi possível realizar a operação.
+            Verifique os dados e tente novamente.
+        </div>
 
-                            <tr>
+    <?php endif; ?>
 
-                                <!-- Identificador do usuário -->
-                                <td>
-                                    <?= (int) $usuario['id'] ?>
-                                </td>
+    <div class="tabela-container">
 
-                                <!-- Nome do usuário -->
-                                <td>
-                                    <?= e($usuario['nome']) ?>
-                                </td>
+        <table class="admin-tabela">
 
-                                <!-- E-mail do usuário -->
-                                <td>
-                                    <?= e($usuario['email']) ?>
-                                </td>
+            <thead>
 
-                                <!-- Tipo de conta -->
-                                <td>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Tipo</th>
+                    <th>Cadastro</th>
+                    <th>Ações</th>
+                </tr>
 
-                                    <?php if ($usuario['tipo'] === 'admin'): ?>
+            </thead>
 
-                                        <span class="tipo-admin">
-                                            Administrador
-                                        </span>
+            <tbody>
 
-                                    <?php else: ?>
+                <?php foreach ($usuarios as $usuario): ?>
 
-                                        <span class="tipo-usuario">
-                                            Usuário
-                                        </span>
+                    <tr>
 
-                                    <?php endif; ?>
+                        <td>
+                            <?= (int) $usuario['id'] ?>
+                        </td>
 
-                                </td>
+                        <td>
+                            <?= e($usuario['nome']) ?>
+                        </td>
 
-                                <!-- Data em que a conta foi criada -->
-                                <td>
+                        <td>
+                            <?= e($usuario['email']) ?>
+                        </td>
 
-                                    <?php if (!empty($usuario['criado_em'])): ?>
+                        <td>
 
-                                        <?= date(
-                                            'd/m/Y',
-                                            strtotime($usuario['criado_em'])
-                                        ) ?>
+                            <?php if ($usuario['tipo'] === 'admin'): ?>
 
-                                    <?php else: ?>
+                                <span class="tipo-admin">
+                                    Administrador
+                                </span>
 
-                                        Não informada
+                            <?php else: ?>
 
-                                    <?php endif; ?>
+                                <span class="tipo-usuario">
+                                    Usuário
+                                </span>
 
-                                </td>
+                            <?php endif; ?>
 
-                            </tr>
+                        </td>
 
-                        <?php endforeach; ?>
+                        <td>
+                            <?= !empty($usuario['criado_em'])
+                                ? date('d/m/Y', strtotime($usuario['criado_em']))
+                                : 'Não informada' ?>
+                        </td>
 
-                    </tbody>
+                        <td>
 
-                </table>
+                            <?php if ($usuario['tipo'] !== 'admin'): ?>
 
-            </div>
+                                <form
+                                    method="POST"
+                                    action="usuarios.php"
+                                    onsubmit="return confirm('Deseja realmente tornar este usuário administrador?');"
+                                >
 
-        <?php else: ?>
+                                    <input
+                                        type="hidden"
+                                        name="usuario_id"
+                                        value="<?= (int) $usuario['id'] ?>"
+                                    >
 
-            <!-- Mensagem quando não existem usuários -->
-            <div class="sem-registros">
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="<?= e($_SESSION['csrf_usuarios']) ?>"
+                                    >
 
-                <h2>Nenhum usuário cadastrado</h2>
+                                    <button
+                                        type="submit"
+                                        class="btn-promover"
+                                    >
+                                        Tornar administrador
+                                    </button>
 
-                <p>
-                    As contas criadas no Trocafy aparecerão aqui.
-                </p>
+                                </form>
 
-            </div>
+                            <?php else: ?>
 
-        <?php endif; ?>
+                                <span>Já é administrador</span>
 
-    </main>
+                            <?php endif; ?>
+
+                        </td>
+
+                    </tr>
+
+                <?php endforeach; ?>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
 
 </body>
 </html>

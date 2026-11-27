@@ -22,121 +22,188 @@
     CABEÇALHO
     ====================================================== */
 
-    .cabecalho {
-        background: #ffffff;
-        padding: 20px 8%;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-    }
+/* ======================================================
+   CABEÇALHO PRINCIPAL
+====================================================== */
 
+.cabecalho {
+    background: #ffffff;
+    padding: 12px 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.cabecalho-container {
+    width: 100%;
+    max-width: 1500px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #673ab7;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #443957;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    color: #8e5bd9;
+}
+
+/* ======================================================
+   PESQUISA DO CABEÇALHO
+====================================================== */
+
+.busca-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #faf8ff;
+    border: 1px solid #ddd3eb;
+    border-radius: 10px;
+    padding: 5px;
+    flex: 1;
+    max-width: 260px;
+    min-width: 170px;
+}
+
+.busca-cabecalho input {
+    width: 100%;
+    min-width: 0;
+    padding: 9px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #292235;
+    font-size: 14px;
+}
+
+.busca-cabecalho button {
+    padding: 9px 12px;
+    border: none;
+    border-radius: 7px;
+    background: #7546c8;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    flex-shrink: 0;
+}
+
+.busca-cabecalho button:hover {
+    background: #59329e;
+}
+
+/* ======================================================
+   MENU DO USUÁRIO
+====================================================== */
+
+.menu-usuario {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.boas-vindas {
+    color: #443957;
+    font-size: 14px;
+    max-width: 110px;
+}
+
+.btn-menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    padding: 9px 11px;
+    border-radius: 9px;
+    color: #7546c8;
+    border: 1px solid #b9a5db;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: 0.3s;
+    flex-shrink: 0;
+}
+
+.btn-menu:hover {
+    background: #f3effa;
+}
+
+.btn-menu.cadastrar {
+    background: #7546c8;
+    color: white;
+}
+
+.btn-menu.cadastrar:hover {
+    background: #59329e;
+}
+
+.btn-menu.sair {
+    border-color: #ddd;
+    color: #555;
+}
+
+/* ======================================================
+   RESPONSIVIDADE DO CABEÇALHO
+====================================================== */
+
+@media (max-width: 1150px) {
     .cabecalho-container {
-        width: 100%;
-        max-width: 1300px;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 25px;
-    }
-
-    .logo {
-        font-size: 28px;
-        font-weight: bold;
-        color: #673ab7;
-        text-decoration: none;
-        flex-shrink: 0;
-    }
-
-    .menu {
-        display: flex;
-        align-items: center;
-        gap: 25px;
-    }
-
-    .menu a {
-        text-decoration: none;
-        color: #443957;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-
-    .menu a:hover {
-        color: #8e5bd9;
-    }
-
-    /* Pesquisa do cabeçalho */
-
-    .busca-cabecalho {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        background: #faf8ff;
-        border: 1px solid #ddd3eb;
-        border-radius: 10px;
-        padding: 5px;
-    }
-
-    .busca-cabecalho input {
-        width: 180px;
-        min-width: 0;
-        padding: 9px;
-        border: none;
-        outline: none;
-        background: transparent;
-        color: #292235;
-        font-size: 14px;
-    }
-
-    .busca-cabecalho button {
-        padding: 9px 12px;
-        border: none;
-        border-radius: 7px;
-        background: #7546c8;
-        color: white;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .busca-cabecalho button:hover {
-        background: #59329e;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .menu-usuario {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .cabecalho {
+        padding: 15px;
     }
 
-    .boas-vindas {
-        color: #443957;
-        font-size: 15px;
+    .cabecalho-container {
+        flex-direction: column;
+        gap: 15px;
     }
 
-    .btn-menu {
-        text-decoration: none;
-        padding: 10px 16px;
-        border-radius: 9px;
-        color: #7546c8;
-        border: 1px solid #b9a5db;
-        transition: 0.3s;
+    .menu {
+        gap: 15px;
     }
 
-    .btn-menu:hover {
-        background: #f3effa;
+    .busca-cabecalho {
+        width: 100%;
+        max-width: 100%;
     }
 
-    .btn-menu.cadastrar {
-        background: #7546c8;
-        color: white;
+    .menu-usuario {
+        width: 100%;
+        justify-content: center;
     }
-
-    .btn-menu.cadastrar:hover {
-        background: #59329e;
-    }
-
-    .btn-menu.sair {
-        border-color: #ddd;
-        color: #555;
-    }
+}
 
     /* ======================================================
     DESTAQUE DA PÁGINA INICIAL
@@ -1172,3 +1239,962 @@
         display: block;
     }
 
+/* FORMULÁRIO DE BUSCA */
+.form-busca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 25px 0;
+}
+
+/* CAMPO DE TEXTO E CATEGORIA */
+.form-busca input,
+.form-busca select {
+    height: 48px;
+    padding: 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 15px;
+    color: #333;
+    outline: none;
+    transition: 0.3s;
+}
+
+/* CAMPO DE PESQUISA */
+.form-busca input {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* EFEITO AO CLICAR */
+.form-busca input:focus,
+.form-busca select:focus {
+    border-color: #6250a5;
+    box-shadow: 0 0 0 3px rgba(98, 80, 165, 0.12);
+}
+
+/* BOTÃO BUSCAR */
+.form-busca button {
+    height: 48px;
+    padding: 0 28px;
+    border: none;
+    border-radius: 10px;
+    background: #6250a5;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-busca button:hover {
+    background: #49377f;
+    transform: translateY(-2px);
+}
+
+/* CELULAR */
+@media (max-width: 600px) {
+    .form-busca {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-busca input,
+    .form-busca select,
+    .form-busca button {
+        width: 100%;
+    }
+}
+/* ========================================
+   FORMULÁRIO DE ANÚNCIO - TROCAFY
+======================================== */
+
+.form-anuncio {
+    max-width: 750px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.form-anuncio h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.form-anuncio label {
+    display: block;
+    margin: 15px 0 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-anuncio input,
+.form-anuncio select,
+.form-anuncio textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-anuncio input:focus,
+.form-anuncio select:focus,
+.form-anuncio textarea:focus {
+    border-color: #a855f7;
+}
+
+.form-anuncio textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-anuncio button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 25px;
+    background: #9333ea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.form-anuncio button:hover {
+    background: #7e22ce;
+}
+
+/* =========================================
+   GERENCIAMENTO DE USUÁRIOS - TROCAFY
+========================================= */
+
+/* CONTAINER PRINCIPAL */
+
+.admin-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+
+/* TABELA */
+
+.tabela-container {
+    overflow-x: auto;
+}
+
+.admin-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 25px;
+}
+
+.admin-tabela th,
+.admin-tabela td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.admin-tabela th {
+    background: #eee8ff;
+    color: #292235;
+}
+
+
+/* TIPOS DE USUÁRIO */
+
+.tipo-admin {
+    background: #eee5ff;
+    color: #7041bd;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.tipo-usuario {
+    background: #eeeeee;
+    color: #555;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+
+/* BOTÃO PROMOVER */
+
+.btn-promover {
+    background: #7041bd;
+    color: white;
+    border: none;
+    padding: 9px 13px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-promover:hover {
+    background: #542d99;
+}
+
+
+/* MENSAGENS */
+
+.mensagem {
+    padding: 14px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.sucesso {
+    background: #e4f8e9;
+    color: #216b35;
+}
+
+.erro {
+    background: #ffe8e8;
+    color: #a12626;
+}
+
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 768px) {
+
+    .admin-container {
+        width: 95%;
+        margin: 25px auto;
+    }
+
+    .admin-tabela th,
+    .admin-tabela td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+}
+
+/* ==========================================
+   FORMULÁRIO DE ANÚNCIO - TROCAFY
+========================================== */
+
+.anunciar-container {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 14px;
+}
+
+.anunciar-container h1 {
+    margin-bottom: 10px;
+    color: #7041bd;
+}
+
+.campo-formulario {
+    margin-top: 20px;
+}
+
+.campo-formulario label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.campo-formulario input,
+.campo-formulario select,
+.campo-formulario textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.campo-formulario textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.campo-formulario small {
+    display: block;
+    margin-top: 8px;
+    color: #666;
+}
+
+.btn-publicar {
+    width: 100%;
+    padding: 14px;
+    margin-top: 25px;
+    background: #7041bd;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-publicar:hover {
+    background: #58319b;
+}
+
+.mensagem {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.sucesso {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.erro {
+    background: #f8d7da;
+    color: #842029;
+}
+
+/* ==========================================
+   NEGOCIAÇÃO NA PÁGINA DE DETALHES
+========================================== */
+
+.detalhes-negociacao {
+    margin: 20px 0;
+    padding: 14px;
+    background: #f5f0ff;
+    border-radius: 8px;
+}
+
+.detalhes-negociacao span {
+    display: block;
+    margin-top: 5px;
+    color: #7041bd;
+    font-weight: bold;
+}
+
+.area-negociacao {
+    margin-top: 30px;
+}
+
+.area-compra,
+.area-proposta {
+    margin-top: 20px;
+    padding: 22px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.area-compra h2,
+.area-proposta h2 {
+    margin-bottom: 12px;
+    color: #7041bd;
+}
+
+.area-compra p,
+.area-proposta p {
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+
+.area-compra label,
+.area-proposta label {
+    display: block;
+    margin: 15px 0 8px;
+    font-weight: bold;
+}
+
+.area-compra textarea,
+.area-proposta textarea,
+.area-proposta select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.btn-compra {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #7041bd;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-compra:hover {
+    background: #58319b;
+}
+
+.btn-voltar {
+    display: inline-block;
+    margin-top: 25px;
+}
+
+/* =========================================
+   1. CONTAINER PRINCIPAL
+   Define a largura e centraliza a página
+========================================= */
+
+.solicitacoes-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 40px auto;
+}
+
+/* Espaçamento do título */
+
+.solicitacoes-container h1 {
+    margin-bottom: 10px;
+}
+
+/* Texto de apresentação da página */
+
+.solicitacoes-descricao {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+
+/* =========================================
+2. LISTA DE SOLICITAÇÕES
+Organiza os cartões com espaçamento
+========================================= */
+
+.lista-solicitacoes {
+    display: grid;
+    gap: 20px;
+}
+
+
+/* =========================================
+3. CARTÃO DE CADA SOLICITAÇÃO
+Cria o visual de cada pedido recebido
+========================================= */
+
+.card-solicitacao {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 22px;
+}
+
+/* Espaçamento do nome do produto */
+
+.card-solicitacao h2 {
+    margin-bottom: 15px;
+}
+
+/* Espaçamento entre as informações */
+
+.card-solicitacao p {
+    margin: 10px 0;
+}
+
+
+/* =========================================
+4. MENSAGEM DO COMPRADOR
+Destaca a mensagem enviada pelo interessado
+========================================= */
+
+.mensagem-comprador {
+    background: #f5f5f5;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+
+/* =========================================
+5. STATUS DA SOLICITAÇÃO
+Diferencia pendente, aceita e recusada
+========================================= */
+
+.status-solicitacao {
+    font-weight: bold;
+}
+
+/* Solicitação aguardando resposta */
+
+.status-pendente {
+    color: #b7791f;
+}
+
+/* Solicitação aceita */
+
+.status-aceita {
+    color: #16803c;
+}
+
+/* Solicitação recusada */
+
+.status-recusada {
+    color: #c53030;
+}
+
+
+/* =========================================
+6. BOTÕES DE ACEITAR E RECUSAR
+Organiza os botões lado a lado
+========================================= */
+
+.botoes-solicitacao {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Estilo padrão dos botões */
+
+.botoes-solicitacao button {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 22px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Botão para aceitar a solicitação */
+
+.btn-aceitar {
+    background: #16803c;
+    color: white;
+}
+
+/* Botão para recusar a solicitação */
+
+.btn-recusar {
+    background: #c53030;
+    color: white;
+}
+
+
+/* =========================================
+7. MENSAGEM QUANDO NÃO EXISTEM PEDIDOS
+========================================= */
+
+.solicitacoes-vazias {
+    background: #f5f5f5;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+
+/* =========================================
+8. BOTÃO PARA VOLTAR AO INÍCIO
+========================================= */
+
+.btn-voltar {
+    display: inline-block;
+    margin-top: 25px;
+    text-decoration: none;
+}
+
+.categoria {
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    color: inherit;
+}
+
+.categoria:hover {
+    color: #7041bd;
+}
+
+
+
+/* ======================================================
+   MINHAS CONVERSAS
+====================================================== */
+
+.pagina-conversas {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.pagina-conversas h1 {
+    margin-bottom: 10px;
+}
+
+.conversas-descricao {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.lista-conversas {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.conversa-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.conversa-informacoes h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+
+.conversa-tipo {
+    font-size: 13px;
+    color: #777;
+}
+
+.conversa-ultima-mensagem {
+    margin: 10px 0 0;
+    color: #555;
+}
+
+.botao-abrir-chat {
+    display: inline-block;
+    padding: 10px 16px;
+    background: #6c4ab6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.botao-abrir-chat:hover {
+    background: #563796;
+}
+
+.conversas-vazio {
+    padding: 25px;
+    text-align: center;
+    background: #f5f5f5;
+    border-radius: 10px;
+}
+
+@media (max-width: 600px) {
+    .conversa-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ======================================================
+   TELA DE CONVERSA
+====================================================== */
+
+/* ======================================================
+   TELA DE CONVERSA - CHAT TROCAFY
+====================================================== */
+
+.pagina-chat {
+    max-width: 850px;
+    margin: 35px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+}
+
+/* Cabeçalho da conversa */
+
+.chat-cabecalho {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.chat-voltar {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: #7546c8;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.chat-cabecalho h1 {
+    margin: 0 0 5px;
+    color: #443957;
+}
+
+.chat-cabecalho span {
+    color: #888;
+    font-size: 14px;
+}
+
+/* Área das mensagens */
+
+.chat-mensagens {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 250px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 25px 10px;
+    background: #faf9fc;
+}
+
+/* Balões */
+
+.mensagem {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 15px;
+    overflow-wrap: anywhere;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.mensagem strong {
+    font-size: 13px;
+    color: #56329e;
+}
+
+.mensagem p {
+    margin: 8px 0;
+    color: #333;
+    white-space: pre-wrap;
+}
+
+.mensagem small {
+    display: block;
+    font-size: 11px;
+    color: #777;
+    text-align: right;
+}
+
+/* Mensagens enviadas */
+
+.mensagem-minha {
+    align-self: flex-end;
+    background: #e8ddff;
+    border-bottom-right-radius: 4px;
+}
+
+/* Mensagens recebidas */
+
+.mensagem-outro {
+    align-self: flex-start;
+    background: #ffffff;
+    border: 1px solid #eee;
+    border-bottom-left-radius: 4px;
+}
+
+/* Quando ainda não existem mensagens */
+
+.chat-sem-mensagens {
+    text-align: center;
+    color: #888;
+    margin: auto;
+}
+
+/* Formulário */
+
+.chat-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.chat-formulario textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 14px;
+    outline-color: #7546c8;
+}
+
+.chat-formulario button {
+    align-self: flex-end;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background: #7546c8;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.chat-formulario button:hover {
+    background: #59329e;
+}
+
+.chat-erro {
+    color: #c62828;
+}
+
+/* Celulares */
+
+@media (max-width: 600px) {
+    .pagina-chat {
+        margin: 15px;
+        padding: 15px;
+    }
+
+    .mensagem {
+        max-width: 90%;
+    }
+}
+/* CONTADOR DE MENSAGENS NÃO LIDAS */
+
+.contador-mensagens {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: 5px;
+    padding: 0 5px;
+    border-radius: 50px;
+    background: #e53935;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+}
+/* ÁREA DE FINALIZAÇÃO DA COMPRA */
+
+.finalizar-compra-area {
+    margin: 20px 0;
+    padding: 18px;
+    background: #f5f0ff;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.finalizar-compra-area p {
+    margin-bottom: 12px;
+}
+
+.finalizar-compra-area button {
+    cursor: pointer;
+}
+/* ===================================
+   MINHAS COMPRAS
+=================================== */
+
+.card-compra {
+    background: #ffffff;
+    border: 1px solid #e5e1f0;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card-compra img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.card-compra h3 {
+    color: #512b81;
+    margin: 5px 0;
+}
+
+.card-compra p {
+    color: #555;
+    margin: 3px 0;
+}
+
+.card-compra strong {
+    display: inline-block;
+    width: fit-content;
+    background: #e8f8ed;
+    color: #218443;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+.acoes-conversa {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-apagar-chat {
+    margin: 0;
+}
+
+.botao-apagar-chat {
+    width: 100%;
+    padding: 11px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.botao-apagar-chat:hover {
+    background: #fecaca;
+}
+/* DETALHES DA NEGOCIAÇÃO */
+
+.detalhes-negociacao {
+    padding: 18px;
+    margin: 20px 0;
+    border-radius: 12px;
+    background: #f8f5ff;
+    border-left: 5px solid #7c3aed;
+}
+
+.detalhes-negociacao h2 {
+    font-size: 18px;
+    margin-bottom: 14px;
+    color: #5b21b6;
+}
+
+.detalhes-negociacao p {
+    margin: 9px 0;
+    color: #333;
+}
+
+.detalhes-compra {
+    border-left-color: #16a34a;
+    background: #f0fdf4;
+}
+
+.detalhes-compra h2 {
+    color: #15803d;
+}
+
+.detalhes-troca {
+    border-left-color: #7c3aed;
+    background: #f5f3ff;
+}

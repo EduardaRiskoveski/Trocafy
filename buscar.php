@@ -136,7 +136,7 @@ $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <p>Encontre o que você procura no Trocafy.</p>
 
-        <form action="buscar.php" method="GET">
+        <form action="buscar.php" method="GET" class="form-busca">
 
             <!-- Campo para pesquisar pelo nome -->
             <input

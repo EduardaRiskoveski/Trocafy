@@ -64,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descricao = trim($_POST['descricao'] ?? '');
     $estado = $_POST['estado'] ?? '';
 
+    // Tipo de negociação
+    $tipoNegociacao = $_POST['tipo_negociacao'] ?? '';
+
     // Receber a categoria
     $categoriaId = filter_input(
         INPUT_POST,
@@ -107,7 +110,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Estados permitidos
+
+    // ==================================================
+    // 9. VALIDAR ESTADO E TIPO DE NEGOCIAÇÃO
+    // ==================================================
+
     $estadosPermitidos = ['novo', 'usado'];
 
     if (!in_array($estado, $estadosPermitidos, true)) {
@@ -115,9 +122,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    $tiposPermitidos = ['troca', 'venda', 'ambos'];
+
+    if (!in_array($tipoNegociacao, $tiposPermitidos, true)) {
+        header('Location: anunciar.php?erro=tipo');
+        exit;
+    }
+
 
     // ==================================================
-    // 9. VERIFICAR SE A CATEGORIA EXISTE
+    // 10. VERIFICAR SE A CATEGORIA EXISTE
     // ==================================================
 
     $stmt = $pdo->prepare("
@@ -135,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     // ==================================================
-    // 10. RECEBER E VALIDAR A FOTO
+    // 11. RECEBER E VALIDAR A FOTO
     // ==================================================
 
     $imagem = null;
@@ -145,7 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($erroUpload !== UPLOAD_ERR_NO_FILE) {
 
-        // Verificar erros no envio
         if ($erroUpload !== UPLOAD_ERR_OK) {
             header('Location: anunciar.php?erro=imagem');
             exit;
@@ -164,28 +177,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tipo = $finfo->file($arquivo['tmp_name']);
 
         // Formatos permitidos
-        $tiposPermitidos = [
+        $tiposPermitidosImagem = [
             'image/jpeg' => 'jpg',
             'image/png'  => 'png',
             'image/webp' => 'webp'
         ];
 
         if (
-            !isset($tiposPermitidos[$tipo]) ||
+            !isset($tiposPermitidosImagem[$tipo]) ||
             getimagesize($arquivo['tmp_name']) === false
         ) {
             header('Location: anunciar.php?erro=imagem');
             exit;
         }
 
-        // Gerar nome aleatório para a imagem
+        // Gerar nome aleatório
         $nomeArquivo = bin2hex(random_bytes(16))
-            . '.' . $tiposPermitidos[$tipo];
+            . '.' . $tiposPermitidosImagem[$tipo];
 
-        // Definir pasta de destino
+        // Pasta de destino
         $pastaDestino = __DIR__ . '/uploads/produtos/';
 
-        // Criar a pasta caso ela não exista
         if (
             !is_dir($pastaDestino) &&
             !mkdir($pastaDestino, 0755, true)
@@ -194,10 +206,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Caminho completo do arquivo
         $caminhoCompleto = $pastaDestino . $nomeArquivo;
 
-        // Salvar a imagem na pasta
+        // Salvar a imagem
         if (!move_uploaded_file(
             $arquivo['tmp_name'],
             $caminhoCompleto
@@ -206,13 +217,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Caminho que será salvo no banco
         $imagem = 'uploads/produtos/' . $nomeArquivo;
     }
 
 
     // ==================================================
-    // 11. CADASTRAR O PRODUTO NO BANCO
+    // 12. CADASTRAR O PRODUTO NO BANCO
     // ==================================================
 
     try {
@@ -225,9 +235,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 preco,
                 descricao,
                 imagem,
-                estado
+                estado,
+                tipo_negociacao
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
         $stmt = $pdo->prepare($sql);
@@ -239,19 +250,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $preco,
             $descricao,
             $imagem,
-            $estado
+            $estado,
+            $tipoNegociacao
         ]);
 
-        // Cadastro realizado
         header('Location: anunciar.php?sucesso=1');
         exit;
 
     } catch (PDOException $erro) {
 
-        // Registrar erro técnico
         error_log($erro->getMessage());
 
-        // Apagar a foto se o cadastro falhar
+        // Apagar imagem se o cadastro falhar
         if (
             $caminhoCompleto !== null &&
             file_exists($caminhoCompleto)
@@ -278,95 +288,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <title>Anunciar produto | Trocafy</title>
 
-    <!-- CSS principal -->
+    <!-- CSS principal do projeto -->
     <link rel="stylesheet" href="asset/style.css">
-
-    <!-- Estilos do formulário -->
-    <style>
-
-        .anunciar-container {
-            max-width: 650px;
-            margin: 40px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 14px;
-        }
-
-        .anunciar-container h1 {
-            margin-bottom: 10px;
-            color: #7041bd;
-        }
-
-        .campo-formulario {
-            margin-top: 20px;
-        }
-
-        .campo-formulario label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .campo-formulario input,
-        .campo-formulario select,
-        .campo-formulario textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-
-        .campo-formulario textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .campo-formulario small {
-            display: block;
-            margin-top: 8px;
-            color: #666;
-        }
-
-        .btn-publicar {
-            width: 100%;
-            padding: 14px;
-            margin-top: 25px;
-            background: #7041bd;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .btn-publicar:hover {
-            background: #58319b;
-        }
-
-        .mensagem {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .sucesso {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .erro {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-    </style>
 
 </head>
 
 <body>
 
-    <!-- Cabeçalho do site -->
+    <!-- Cabeçalho -->
     <?php include __DIR__ . '/includes/cabecalho.php'; ?>
 
 
@@ -407,6 +336,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="mensagem erro">
                 Selecione um estado válido.
+            </div>
+
+        <?php elseif (($_GET['erro'] ?? '') === 'tipo'): ?>
+
+            <div class="mensagem erro">
+                Selecione um tipo de negociação válido.
             </div>
 
         <?php elseif (($_GET['erro'] ?? '') === 'imagem'): ?>
@@ -474,6 +409,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
 
+            <!-- Tipo de negociação -->
+            <div class="campo-formulario">
+
+                <label for="tipo_negociacao">
+                    Como deseja negociar?
+                </label>
+
+                <select
+                    id="tipo_negociacao"
+                    name="tipo_negociacao"
+                    required
+                >
+
+                    <option value="">
+                        Selecione uma opção
+                    </option>
+
+                    <option value="troca">
+                        Somente troca
+                    </option>
+
+                    <option value="venda">
+                        Somente venda
+                    </option>
+
+                    <option value="ambos">
+                        Troca ou venda
+                    </option>
+
+                </select>
+
+            </div>
+
+
             <!-- Descrição -->
             <div class="campo-formulario">
 
@@ -488,7 +457,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
 
-            <!-- Foto do produto -->
+            <!-- Foto -->
             <div class="campo-formulario">
 
                 <label for="imagem">
