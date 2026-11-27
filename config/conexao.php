@@ -4,8 +4,8 @@
 // Dados de acesso ao banco de dados
 $host = 'localhost';
 $dbname = 'trocafy';
-$dbusuario = 'root';
-$dbsenha = 'root';
+$dbusuario = '';
+$dbsenha = '';
 
 try {
 
